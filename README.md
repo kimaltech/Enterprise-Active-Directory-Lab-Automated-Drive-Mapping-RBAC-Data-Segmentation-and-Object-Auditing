@@ -126,6 +126,6 @@ To maintain an immutable security trail of file modifications, creations, and de
 ---
 
 ## 7. Key Engineering & Troubleshooting Takeaways
-* **Token Caching & Session Multiplexing:** Active Directory security group updates do not dynamically update active user sessions[cite: 29]. Tested Kerberos ticket updates via client reboot and validated token population using `whoami /groups`[cite: 29].
-* **Parent Traversal Scoping:** Setting parent read permissions to `This folder, subfolders and files` exposed unintended directories across departmental boundaries[cite: 24, 34]. Scoping the traversal entry strictly to `This folder only` resolved the leak while preserving ABE filtering[cite: 25, 36].
-* **Execution Boundary Resolution:** Overcame PowerShell ISE parsing differences and syntax exceptions by transitioning identity queries from legacy ADSI type lookups to CSV-parsed `whoami` objects[cite: 17, 18, 45].
+* **Token Caching & Session Multiplexing:** Active Directory security group updates do not dynamically update active user sessions. Tested Kerberos ticket updates via client reboot and validated token population using `whoami /groups`.
+* **Parent Traversal Scoping:** Setting parent read permissions to `This folder, subfolders and files` exposed unintended directories across departmental boundaries. Scoping the traversal entry strictly to `This folder only` resolved the leak while preserving ABE filtering.
+* **Execution Boundary Resolution:** Overcame PowerShell ISE parsing differences and syntax exceptions by transitioning identity queries from legacy ADSI type lookups to CSV-parsed `whoami` objects.
