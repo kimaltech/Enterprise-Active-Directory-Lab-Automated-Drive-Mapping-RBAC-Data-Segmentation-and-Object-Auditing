@@ -27,7 +27,7 @@ lab.local
     └── HR Department (OU)
         ├── User: Jane Doe (jdoe)
         └── Security Group: SG-HR-Department
-
+'''
 ---
 
 ## 4. Automation & Logon Script Architecture
