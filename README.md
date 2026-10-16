@@ -32,11 +32,10 @@ lab.local
 ---
 
 ## 4. Automation & Logon Script Architecture
-Rather than manually mapping drives across individual endpoints, drive mounting was automated using a dynamic PowerShell logon script deployed through Group Policy Objects (GPOs)[cite: 5, 45].
+Rather than manually mapping drives across individual endpoints, drive mounting was automated using a dynamic PowerShell logon script deployed through Group Policy Objects (GPOs).
 
 ### Dynamic Mapping Logic (`LogonDriveMap.ps1`)
-![Figure 1: PowerShell Script in ISE](images/01_powershell_script.png)
-The script evaluates the authenticated user's Kerberos token at logon, identifies departmental group membership, clears conflicting drive letters, and assigns persistent SMB mappings[cite: 7, 18, 45]:
+The script evaluates the authenticated user's Kerberos token at logon, identifies departmental group membership, clears conflicting drive letters, and assigns persistent SMB mappings:
 
 ```powershell
 # Get the currently logged-in user's group memberships
@@ -54,6 +53,12 @@ if ($UserGroups -like "*SG-HR-Department*") {
 }
 elseif ($UserGroups -like "*SG-IT-Department*") {
     New-PSDrive -Name "Z" -PSProvider "FileSystem" -Root "$NetworkRoot\IT_Data" -Persist
+}
+```
+
+![Figure 1: PowerShell Script](images/01_powershell_script.png)
+*Figure 1: Dynamic drive-mapping PowerShell script configured in Windows PowerShell ISE on the Domain Controller.*
+
 ### Group Policy Deployment
 1. Placed the script within the domain SYSVOL share: `\\lab.local\sysvol\lab.local\scripts\LogonDriveMap.ps1`.
 2. Linked the GPO to the parent `Employees` OU to apply across all departmental containers.
@@ -63,6 +68,20 @@ elseif ($UserGroups -like "*SG-IT-Department*") {
 
 ![Figure 2: Client Mapped Drive](images/02_drive_mapped.png)
 *Figure 2: Automated network drive mapping (Z:) successfully verified on the Windows 11 client machine.*
+
+---
+
+## 5. Security Hardening & Access-Based Enumeration (ABE)
+
+### Permission Hierarchy (NTFS vs. Share)
+To enforce the principle of least privilege, folder inheritance was disabled on department subdirectories to prevent permission bleeding from the parent root:
+
+| Object | Principal | Permissions (NTFS) | Applies To |
+| :--- | :--- | :--- | :--- |
+| `C:\CompanyShare` | `Domain Users` | Read & execute, List folder contents, Read | This folder only |
+| `C:\CompanyShare` | `Everyone` | Full Control / Change (Share Level) | Network Share |
+| `C:\CompanyShare\IT_Data` | `SG-IT-Department` | Modify, Read & execute, List, Write | This folder, subfolders, and files |
+| `C:\CompanyShare\HR_Data` | `SG-HR-Department` | Modify, Read & execute, List, Write | This folder, subfolders, and files |
 
 ---
 
