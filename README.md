@@ -27,6 +27,9 @@ lab.local
     └── HR Department (OU)
         ├── User: Jane Doe (jdoe)
         └── Security Group: SG-HR-Department
+
+---
+
 ## 4. Automation & Logon Script Architecture
 Rather than manually mapping drives across individual endpoints, drive mounting was automated using a dynamic PowerShell logon script deployed through Group Policy Objects (GPOs)[cite: 5, 45].
 
