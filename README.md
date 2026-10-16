@@ -63,6 +63,9 @@ elseif ($UserGroups -like "*SG-IT-Department*") {
 
 ![Figure 2: Client Mapped Drive](images/02_drive_mapped.png)
 *Figure 2: Automated network drive mapping (Z:) successfully verified on the Windows 11 client machine.*
+
+---
+
 ## 5. Security Hardening & Access-Based Enumeration (ABE)
 
 ### Permission Hierarchy (NTFS vs. Share)
@@ -82,6 +85,9 @@ ABE was enabled on the `CompanyShare` SMB share via Server Manager. When users b
 
 ![Figure 3: ABE Folder Filtering](images/03_abe_filtered_share.png)
 *Figure 3: Client view of \\192.168.10.10\CompanyShare showing ABE dynamically hiding the HR_Data folder.*
+
+---
+
 ## 6. Advanced Object Access Auditing & Compliance
 To maintain an immutable security trail of file modifications, creations, and deletion attempts:
 
@@ -97,6 +103,9 @@ To maintain an immutable security trail of file modifications, creations, and de
 
 ![Figure 4: Audit Event ID 4663](images/04_event_id_4663.png)
 *Figure 4: Windows Event Viewer logging Event ID 4663 for granular file and directory access monitoring.*
+
+---
+
 ## 7. Key Engineering & Troubleshooting Takeaways
 * **Token Caching & Session Multiplexing:** Active Directory security group updates do not dynamically update active user sessions[cite: 29]. Tested Kerberos ticket updates via client reboot and validated token population using `whoami /groups`[cite: 29].
 * **Parent Traversal Scoping:** Setting parent read permissions to `This folder, subfolders and files` exposed unintended directories across departmental boundaries[cite: 24, 34]. Scoping the traversal entry strictly to `This folder only` resolved the leak while preserving ABE filtering[cite: 25, 36].
